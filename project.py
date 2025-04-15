@@ -10,10 +10,10 @@ zombie_SPEED = 1
 dpea_speed = 1
 
 def draw_screen(plant_pos, zombie_pos, peas):
-     
-    screen = [" " * screen_width for _ in range(screen_hidth)]
     
-    screen_hidth-1 = " " * plant_pos + "P" + " " * (screen_width - plant_pos - 1)
+    screen = [" " * screen_width for _ in range(plant_pos or zombie_pos)]
+    
+    screen_hidth = " " * plant_pos + "P" + " " * (screen_width - plant_pos - 1)
     
    
     screen[0] = " " * zombie_pos + "Z" + " " * (screen_width - zombie_pos - 1)
@@ -43,8 +43,8 @@ def check_collision(peas, zombie_pos):
 
 def game_loop():
  
-    plant_pos =plant_pos
-    zombie_pos =zombie_pos
+    plant_pos=screen_hidth
+    zombie_pos=screen_hidth
     peas = []
     
     while True:
