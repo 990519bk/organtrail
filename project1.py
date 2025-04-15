@@ -1,105 +1,84 @@
-import pygame
-import sys
+import time
+import random
+import os
 
-pygame.init()  
+# 游戏设置
+WIDTH = 10
+HEIGHT = 20
 
+# 方块定义（只用 2 个简单的形状）
+SHAPES = [
+    [[1, 1, 1, 1]],       # I 形
+    [[1, 1], [1, 1]],     # O 形
+]
 
-WIDTH, HEIGHT = 800, 600
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("植物大战僵尸")
+def create_board():
+    return [[0 for _ in range(WIDTH)] for _ in range(HEIGHT)]
 
-class Plant(pygame.sprite.Sprite):
-    def __init__(self, x, y, plant_type):
-        super().__init__()
-        self.rect = pygame.Rect(x, y, 50, 50)  
-        self.type = plant_type
+def print_board(board):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    for row in board:
+        print(''.join('█' if cell else ' ' for cell in row))
+    print('-' * WIDTH)
 
-    def update(self):
-        
-        pass
+def can_move(board, shape, x, y):
+    for i, row in enumerate(shape):
+        for j, cell in enumerate(row):
+            if cell:
+                if y + i >= HEIGHT or x + j < 0 or x + j >= WIDTH or board[y + i][x + j]:
+                    return False
+    return True
 
-    def draw(self, surface):
-        if self.type == "sunflower":
-            pygame.draw.rect(surface, (255, 255, 0), self.rect)  
-        elif self.type == "peashooter":
-            pygame.draw.rect(surface, (0, 255, 0), self.rect)  
-        elif self.type == "wallnut":
-            pygame.draw.rect(surface, (139, 69, 19), self.rect)  
-        elif self.type == "cherry_bomb":
-            pygame.draw.rect(surface, (255, 0, 0), self.rect)  
+def place_shape(board, shape, x, y):
+    for i, row in enumerate(shape):
+        for j, cell in enumerate(row):
+            if cell:
+                board[y + i][x + j] = 1
 
-            import pygame
-import sys
+def clear_lines(board):
+    new_board = [row for row in board if not all(row)]
+    lines_cleared = HEIGHT - len(new_board)
+    for _ in range(lines_cleared):
+        new_board.insert(0, [0 for _ in range(WIDTH)])
+    return new_board, lines_cleared
 
-pygame.init()  
+def drop_shape(board, shape):
+    x = WIDTH // 2 - len(shape[0]) // 2
+    y = 0
+    while can_move(board, shape, x, y + 1):
+        y += 1
+        print_board_with_shape(board, shape, x, y)
+        time.sleep(0.1)
+    place_shape(board, shape, x, y)
+    return clear_lines(board)
 
+def print_board_with_shape(board, shape, x, y):
+    temp_board = [row[:] for row in board]
+    for i, row in enumerate(shape):
+        for j, cell in enumerate(row):
+            if cell and 0 <= y + i < HEIGHT and 0 <= x + j < WIDTH:
+                temp_board[y + i][x + j] = 1
+    print_board(temp_board)
 
-WIDTH, HEIGHT = 800, 600
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("植物大战僵尸")
+def main():
+    board = create_board()
+    score = 0
 
-PLANT_TYPES = ["sunflower", "peashooter", "wallnut", "cherry_bomb"]
-current_plant_index = 0
+    try:
+        while True:
+            shape = random.choice(SHAPES)
+            board, lines = drop_shape(board, shape)
+            score += lines
+            print_board(board)
+            print(f"得分: {score}")
+            time.sleep(0.5)
 
+            # 游戏结束条件
+            if any(board[0]):
+                print("游戏结束！")
+                break
+    except KeyboardInterrupt:
+        print("\n退出游戏。")
 
-all_sprites = pygame.sprite.Group()
-
-
-class Plant(pygame.sprite.Sprite):
-    def __init__(self, x, y, plant_type):
-        super().__init__()
-        self.rect = pygame.Rect(x, y, 50, 50)
-        self.type = plant_type
-
-    def update(self):
-       
-        pass
-
-    def draw(self, surface):
-        if self.type == "sunflower":
-            pygame.draw.rect(surface, (255, 255, 0), self.rect)
-        elif self.type == "peashooter":
-            pygame.draw.rect(surface, (0, 255, 0), self.rect)
-        elif self.type == "wallnut":
-            pygame.draw.rect(surface, (139, 69, 19), self.rect)
-        elif self.type == "cherry_bomb":
-            pygame.draw.rect(surface, (255, 0, 0), self.rect)
-
-
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_1:
-                current_plant_index = 0
-            elif event.key == pygame.K_2:
-                current_plant_index = 1
-            elif event.key == pygame.K_3:
-                current_plant_index = 2
-            elif event.key == pygame.K_4:
-                current_plant_index = 3
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            plant_type = PLANT_TYPES[current_plant_index]
-            plant = Plant(mouse_x, mouse_y, plant_type)
-            all_sprites.add(plant)
-
-    
-    window.fill((255, 255, 255))
-
-  
-    all_sprites.update()
-
-    for sprite in all_sprites:
-        sprite.draw(window)
-
-    
-    pygame.display.flip()
-
-
-pygame.quit()
-sys.exit()
-
-    
+if __name__ == "__main__":
+    main()
