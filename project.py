@@ -4,7 +4,7 @@ import time
 
 screen_width = 20
 screen_hidth = 5
-plant_pos = 1
+plant_pos = 5
 zombie_pos = screen_width - 1
 zombie_SPEED = 1
 dpea_speed = 1
@@ -49,7 +49,7 @@ def game_loop():
     
     while True:
        
-        action = input("Press 'space' to shoot, 'a' to move left, 'd' to move right, 'q' to quit: ").lower()
+        action = input("Press 'f' to shoot, 'a' to move left, 'd' to move right, 'q' to quit: ").lower()
         
       
         if action == "q":
@@ -59,13 +59,13 @@ def game_loop():
             plant_pos -= 1
         elif action == "d" and plant_pos < screen_width - 1:
             plant_pos += 1
-        elif action == " ":
+        elif action == "f":
             peas.append((plant_pos + 1, screen_hidth - 1))  
 
       
         peas = move_peas(peas)
 
-       
+                
         if check_collision(peas, zombie_pos):
             print("Zombie is hit!")
             break
