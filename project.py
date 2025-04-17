@@ -4,12 +4,14 @@ import time
 
 screen_width = 20
 screen_hidth = 5
-plant_pos = 5
-zombie_pos = screen_width - 1
+plant_pos =screen_hidth
+zombie_pos = (10,5)
 zombie_SPEED = 1
-dpea_speed = 1
+bleads_speed = 1
 
 def draw_screen(plant_pos, zombie_pos, peas):
+
+
     
     screen = [" " * screen_width for _ in range(plant_pos or zombie_pos)]
     
@@ -20,7 +22,7 @@ def draw_screen(plant_pos, zombie_pos, peas):
 
    
     for pea in peas:
-        if pea[1] == screen_hidth- 1:
+        if pea[1] == screen_hidth:
             screen[pea[1]] = screen[pea[1]][:pea[0]] + "*" + screen[pea[1]][pea[0]+1:]
 
     print("\n".join(screen))
