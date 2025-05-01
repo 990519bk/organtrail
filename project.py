@@ -23,7 +23,7 @@ def draw_screen(plant_pos, zombie_pos, peas):
    
     for pea in peas:
         if pea[1] == screen_hidth:
-            screen[pea[1]] = screen[pea[1]][:pea[0]] + "*" + screen[pea[1]][pea[0]+1:]
+            screen[pea[1]] = screen[pea[1]][:pea[0]] + "*" + screen[pea[1]][pea[0]+1:] 
 
     print("\n".join(screen))
 
@@ -31,7 +31,7 @@ def move_peas(peas):
    
     new_peas = []
     for pea in peas:
-        new_x = pea[0] + dpea_speed
+        new_x = pea[0] + bleas_speed
         if new_x < screen_width:
             new_peas.append((new_x, pea[1]))
     return new_peas
